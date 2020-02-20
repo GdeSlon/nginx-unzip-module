@@ -219,7 +219,15 @@ static ngx_int_t ngx_http_unzip_handler(ngx_http_request_t *r)
         free(unzipextract_path);
         return NGX_HTTP_NOT_FOUND;
     }
-
+    
+    /* lol kek */
+    if (!(unzipextract_path = zip_get_name(zip_source, 0, &zip_st))) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%s : no such archive file.", unzipfile_path);
+        free(unzipfile_path);
+        free(unzipextract_path);
+        return NGX_HTTP_NOT_FOUND;
+    }
+    
     /* initialize structure */
     zip_stat_init(&zip_st);
 
