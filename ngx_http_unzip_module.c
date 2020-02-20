@@ -221,18 +221,13 @@ static ngx_int_t ngx_http_unzip_handler(ngx_http_request_t *r)
     }
     
     /* lol kek */
-    if (!(unzipextract_path = zip_get_name(zip_source, 0, ZIP_FL_UNCHANGED))) {
-        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%s : no such archive file.", unzipfile_path);
-        free(unzipfile_path);
-        free(unzipextract_path);
-        return NGX_HTTP_NOT_FOUND;
-    }
+    const char * unzipextract_path2 = zip_get_name(zip_source, 0, ZIP_FL_UNCHANGED);
     
     /* initialize structure */
     zip_stat_init(&zip_st);
 
     /* let's check what's the size of a file. return 404 if we can't stat file inside archive */
-    if (0 != zip_stat(zip_source, unzipextract_path, 0, &zip_st)) {
+    if (0 != zip_stat(zip_source, unzipextract_path2, 0, &zip_st)) {
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "no file %s inside %s archive.", unzipextract_path, unzipfile_path);
         free(unzipfile_path);
         free(unzipextract_path);
@@ -253,7 +248,7 @@ static ngx_int_t ngx_http_unzip_handler(ngx_http_request_t *r)
     *  try to open a file that we want - if not return 500 as we know that the file is there (making zip_stat before) 
     *  so let's return 500.
     */
-    if (!(file_in_zip = zip_fopen(zip_source, unzipextract_path, 0))) {
+    if (!(file_in_zip = zip_fopen(zip_source, unzipextract_path2, 0))) {
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "failed to open %s from %s archive (corrupted?).",
                 unzipextract_path, unzipfile_path);
         free(unzipfile_path);
