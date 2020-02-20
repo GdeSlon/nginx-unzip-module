@@ -221,7 +221,7 @@ static ngx_int_t ngx_http_unzip_handler(ngx_http_request_t *r)
     }
     
     /* lol kek */
-    if (!(unzipextract_path = zip_get_name(zip_source, 0, &zip_st))) {
+    if (!(unzipextract_path = zip_get_name(zip_source, 0, ZIP_FL_UNCHANGED))) {
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%s : no such archive file.", unzipfile_path);
         free(unzipfile_path);
         free(unzipextract_path);
